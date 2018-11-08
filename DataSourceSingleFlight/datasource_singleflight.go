@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"time"
 
@@ -15,6 +16,8 @@ func main() {
 	var requestGroup singleflight.Group
 
 	http.HandleFunc("/fetch_data", RequestGroup{r: &requestGroup}.HelloWorldHandler)
+
+	log.Println("Serving Port :  8001")
 	http.ListenAndServe(":8001", nil)
 }
 
@@ -24,6 +27,7 @@ type RequestGroup struct {
 
 func (rg RequestGroup) HelloWorldHandler(w http.ResponseWriter, r *http.Request) {
 
+	fmt.Println(r.URL)
 	value, err, _ := rg.r.Do("github", func() (interface{}, error) {
 		return GetData()
 	})

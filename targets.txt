@@ -1,0 +1,2 @@
+GET http://localhost:8001/fetch_data
+GET http://localhost:8000/fetch_data
