@@ -15,7 +15,7 @@ var cost int64
 func main() {
 	var requestGroup singleflight.Group
 
-	http.HandleFunc("/fetch_data", RequestGroup{r: &requestGroup}.HelloWorldHandler)
+	http.HandleFunc("/fetch_data", RequestGroup{r: &requestGroup}.GetDataHandler)
 
 	log.Println("Serving Port :  8001")
 	http.ListenAndServe(":8001", nil)
@@ -25,10 +25,16 @@ type RequestGroup struct {
 	r *singleflight.Group
 }
 
-func (rg RequestGroup) HelloWorldHandler(w http.ResponseWriter, r *http.Request) {
+func (rg RequestGroup) GetDataHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(r.URL)
-	value, err, _ := rg.r.Do("github", func() (interface{}, error) {
+	value, err, _ := rg.r.Do(r.URL.String(), func() (interface{}, error) {
+
+		go func() {
+			time.Sleep(5000 * time.Millisecond)
+			rg.r.Forget(r.URL.String())
+		}()
+
 		return GetData()
 	})
 	if err != nil {

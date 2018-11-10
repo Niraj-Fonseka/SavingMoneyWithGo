@@ -11,11 +11,11 @@ import (
 var cost int64
 
 func main() {
-	http.HandleFunc("/fetch_data", HelloWorldHandler)
+	http.HandleFunc("/fetch_data", GetDataHandler)
 	log.Println("Serving Port :  8000")
 	http.ListenAndServe(":8000", nil)
 }
-func HelloWorldHandler(w http.ResponseWriter, r *http.Request) {
+func GetDataHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r.URL)
 	data, _ := GetData()
 	io.WriteString(w, data)
